@@ -8,8 +8,17 @@ dotenv.config();
 const app = express();
 
 // Middleware
-app.use(express.json());
-app.use(cors());
+
+app.use(
+  cors({
+    origin: "http://localhost:3000", // Allow only the frontend at localhost:3000
+    methods: "GET, POST, PUT, DELETE", // Allow these methods
+    allowedHeaders: ["Content-Type, Authorization"], // Allow these headers
+  })
+);
+
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 // Connect to MongoDB
 mongoose
@@ -19,7 +28,10 @@ mongoose
 
 // Import routes
 const authRoutes = require("./routes/auth");
+const plantRoutes = require("./routes/plants");
+console.log("is this thing on?");
 app.use("/api/auth", authRoutes);
+app.use("/api/plants", plantRoutes);
 
 // Start the server
 const PORT = process.env.PORT || 3001;

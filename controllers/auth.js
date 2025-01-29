@@ -1,11 +1,14 @@
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const User = require("../models/User");
-
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import User from "../models/User.js";
 // Register a new user
-exports.registerUser = async (req, res) => {
+const registerUser = async (req, res) => {
   try {
     const { username, email, password } = req.body;
+
+    console.log(req.body);
+
+    console.log(`username: ${username}`);
 
     // Check if the user already exists
     const existingUser = await User.findOne({ email });
@@ -31,8 +34,44 @@ exports.registerUser = async (req, res) => {
   }
 };
 
+const getAllUsers = async (req, res) => {
+  console.log("Getting users");
+  try {
+    const users = await User.find({}, "username email"); // Fetch only username & email
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching users" });
+  }
+};
+
+// Delete user by ID
+const deleteUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Ensure only an authenticated user or admin can delete
+    if (req.user.id !== id) {
+      return res
+        .status(403)
+        .json({ message: "Unauthorized to delete this user" });
+    }
+
+    const deletedUser = await User.findByIdAndDelete(id);
+
+    if (!deletedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({ message: "User deleted successfully" });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error deleting user", error: error.message });
+  }
+};
+
 // Login an existing user
-exports.loginUser = async (req, res) => {
+const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -61,3 +100,5 @@ exports.loginUser = async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 };
+
+export { getAllUsers, deleteUser, loginUser, registerUser };
