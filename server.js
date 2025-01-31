@@ -13,9 +13,9 @@ app.use(
   cors({
     origin: [
       "http://localhost:3000",
-      "plant-app-omega.vercel.app",
+      "https://plant-app-omega.vercel.app",
       "https://plant-app-backend-5cp1.onrender.com",
-      "plant-app-git-main-snapedevs-projects.vercel.app",
+      "https://plant-app-git-main-snapedevs-projects.vercel.app",
     ], // Allow only the frontend at localhost:3000
     methods: "GET, POST, PUT, DELETE", // Allow these methods
     allowedHeaders: ["Content-Type, Authorization"],
