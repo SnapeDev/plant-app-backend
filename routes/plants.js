@@ -15,10 +15,6 @@ router.get("/", authMiddleware, async (req, res) => {
 
 // Create a new plant
 router.post("/", authMiddleware, async (req, res) => {
-  if (!req.user.id) {
-    return;
-  }
-
   const { name, needsWatering, imageUrl, lastWatered, wateringFrequency } =
     req.body;
 
@@ -40,9 +36,6 @@ router.post("/", authMiddleware, async (req, res) => {
 
 // Update a plant
 router.put("/:id", authMiddleware, async (req, res) => {
-  if (!req.user.id) {
-    return;
-  }
   try {
     const updatedPlant = await Plant.findByIdAndUpdate(
       req.params.id,
@@ -57,9 +50,7 @@ router.put("/:id", authMiddleware, async (req, res) => {
 
 // Delete a plant
 router.delete("/:id", authMiddleware, async (req, res) => {
-  if (!req.user.id) {
-    return;
-  }
+  console.log(`deleting plant with id: ${req.params.id}`);
   try {
     await Plant.findByIdAndDelete(req.params.id);
     res.status(204).end();
